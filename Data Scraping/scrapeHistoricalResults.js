@@ -45,13 +45,14 @@ async function scrape(){
         const index = parseInt(season.attribs['data-option-index']) + 1;
         await Promise.fromCallback((cb) => nightmare.scrollTo(0,0).click(`${yearSelector} > li:nth-child(${index})`).then(cb));
         const newList = await scrapeSinglePage();
-        fullDataTable = fullDataTable.concat(newList);
+          fullDataTable = fullDataTable.concat(newList);
     });
     const jsonData = JSON.stringify(fullDataTable);
     console.log(fullDataTable.length);
-    fs.writeFile('AllPremierLeagueGames.txt', jsonData, (err) => {
+    fs.writeFile('AllPremierLeagueGames.json', jsonData, (err) => {
         if(err) throw new Error(err);
     });
+    nightmare.end();
 }
 
 scrape();
