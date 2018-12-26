@@ -6,5 +6,8 @@ This application is made to try out several methods to try and predict the resul
 
 ## Logistic Regression
 The first, and most basic method will be a logistic regression model using past results. 
-using `Data Scraping/scrapeHistoricalResults.js` we scraped all 10292 EPL games (from 1992-2018)
-and stored them in `Data Sets/allPremierLeagueGames.json`
+using `DataScraping/scrapeHistoricalResults.js` we scraped all 10292 EPL games (from 1992-2018)
+and stored them in `DataSets/allPLGames.json`
+
+using `ML/classifyData.py` we stored the data in Tensors, so that we can utilize Tensorflow to perform 
+the actual logictic regression
