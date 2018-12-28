@@ -11,3 +11,6 @@ and stored them in `DataSets/allPLGames.json`
 
 using `ML/classifyData.py` we stored the data in Tensors, so that we can utilize Tensorflow to perform 
 the actual logictic regression
+
+in `ML/trainLogisticRegressionModel.py` we train a model using the gradient descent algorithm, in order to get our model
+`theta`, which is a very simple 4x1 vector

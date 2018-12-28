@@ -86,7 +86,7 @@ def classify_team(team):
 np_game_matrix = np.empty([10292,3])
 np_results_matrix = np.zeros([10292,3])
 games_matrix = tf.get_variable("games_matrix", shape=[10292,3], dtype = tf.float32, initializer = tf.zeros_initializer)
-results_matrix = tf.get_variable("results_matrix", shape=[10292,3], dtype = tf.float32, initializer = tf.zeros_initializer)
+results_matrix = tf.get_variable("results_matrix", shape=[10292,3], dtype = tf.int32, initializer = tf.zeros_initializer)
 
 with open('../DataSets/AllPLGames.json') as f:
   data = json.load(f)
@@ -118,23 +118,3 @@ with tf.Session() as sess:
   # Save the variables to disk.
   save_path = saver.save(sess, "../models/dataMatrices.ckpt")
   print("Model saved in path: %s" % save_path)
-
-# a = tf.get_variable("a", shape=[2,2], dtype = tf.int32)
-# b = tf.get_variable("b", shape=[2,1], dtype = tf.int32)
-# c = tf.get_variable("c", shape=[2,1], dtype = tf.int32)
-
-
-# # Add ops to save and restore all the variables.
-# saver = tf.train.Saver()
-
-# # Later, launch the model, use the saver to restore variables from disk, and
-# # do some work with the model.
-# with tf.Session() as sess:
-#   sess.run(tf.global_variables_initializer())
-#   # Restore variables from disk.
-#   saver.restore(sess, "../DataSets/model.ckpt")
-#   print("Model restored.")
-#   # Check the values of the variables
-#   print("a : %s" % a.eval())
-#   print("b : %s" % b.eval())
-#   print("c : %s" % c.eval())
