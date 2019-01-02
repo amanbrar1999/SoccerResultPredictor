@@ -1,8 +1,6 @@
 # SoccerResultPredictor
 
-Predicting sports can be very difficult due to the amount of factors involved in each individual game.
-
-This application is made to try out several methods to try and predict the results of upcoming EPL soccer games.
+Predicting sports can be very difficult due to the amount of factors involved in each individual game. The purpose of this project is to try out several machine learning methods to predict the results of upcoming EPL soccer games.
 
 ## Logistic Regression
 The first, and most basic method will be a logistic regression model using past results. 
