@@ -7,7 +7,7 @@ fs.readFile('/Users/amanbrar/Documents/GitHub/SoccerResultPredictor/DataSets/All
     if(err) throw new Error(err);
     const jsonObj = JSON.parse(data);
     jsonObj.forEach((element, index) => {
-        const relevancy = (10291 - index)/10291;
+        const relevancy = 10*(10291 - index)/10291;
         element.relevancy = relevancy;
     });
     const newJSON = JSON.stringify(jsonObj);

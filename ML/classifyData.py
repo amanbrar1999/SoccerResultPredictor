@@ -28,6 +28,7 @@
 import numpy as np
 import tensorflow as tf 
 import json
+import random
 
 def classify_team(team):
   teams_dict = {
@@ -85,11 +86,17 @@ def classify_team(team):
 
 np_game_matrix = np.empty([10292,3])
 np_results_matrix = np.zeros([10292,3])
-games_matrix = tf.get_variable("games_matrix", shape=[10292,3], dtype = tf.float32, initializer = tf.zeros_initializer)
-results_matrix = tf.get_variable("results_matrix", shape=[10292,3], dtype = tf.int32, initializer = tf.zeros_initializer)
+games_matrix = tf.get_variable("games_matrix", shape=[10292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
+results_matrix = tf.get_variable("results_matrix", shape=[10292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
+training_games_matrix = tf.get_variable("training_games_matrix", shape=[8000,3], dtype = tf.float64, initializer = tf.zeros_initializer)
+training_results_matrix = tf.get_variable("training_results_matrix", shape=[8000,3], dtype = tf.float64, initializer = tf.zeros_initializer)
+test_games_matrix = tf.get_variable("test_games_matrix", shape=[2292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
+test_results_matrix = tf.get_variable("test_results_matrix", shape=[2292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
 
 with open('../DataSets/AllPLGames.json') as f:
   data = json.load(f)
+
+random.shuffle(data) # ensure randomness in data order
 
 for i in range(len(data)):
   np_game_matrix[i][0] = classify_team(data[i]['home'])
@@ -115,6 +122,10 @@ with tf.Session() as sess:
   sess.run(init_op)
   sess.run(games_matrix.assign(np_game_matrix))
   sess.run(results_matrix.assign(np_results_matrix))
+  sess.run(training_games_matrix.assign(np_game_matrix[0:8000]))
+  sess.run(training_results_matrix.assign(np_results_matrix[0:8000]))
+  sess.run(test_games_matrix.assign(np_game_matrix[8000:]))
+  sess.run(test_results_matrix.assign(np_results_matrix[8000:]))
   # Save the variables to disk.
   save_path = saver.save(sess, "../models/dataMatrices.ckpt")
   print("Model saved in path: %s" % save_path)
