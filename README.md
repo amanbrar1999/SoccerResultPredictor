@@ -15,6 +15,6 @@ in `ML/trainLogisticRegressionModel.py` we train a logistic regression model usi
 We utilize one vs all logistic regression in order to classify a certain game as either a "Home Win", "Draw", or "Home Loss". This means that we will create a model that represents each outcome, and we choose whichever one comes out with the highest probability of being true
 
 ## TODO
-implement an approach with a neural network model
-implement an approach with SVM
-Make it user friendly, perhaps by connecting it to a webapp (rather than the current CLI)
+ - Implement an approach with a neural network model
+ - Implement an approach with SVM
+ - Make it user friendly, perhaps by connecting it to a webapp (rather than the current CLI)
