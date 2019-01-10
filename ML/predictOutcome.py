@@ -23,49 +23,43 @@ import matplotlib.pyplot as plt
 #  [ 0.26889068]] 
 # cost: 1.111997144379274 
 
-def sigmoid(theta, x):
-  m = x.get_shape()[0]
-  xWithOnes = tf.concat([tf.ones([m,1], tf.float64), x], 1)
-  exponent = tf.matmul(xWithOnes, theta)
-  return 1 / (1 + tf.math.exp(-exponent))
+class predictor:
 
-# To apply one vs all logistic regression, we run a data point against each model and pick the one with the highest precision
-# using our hypothesis function, aka the sigmoid function (this will return a value between 0 and 1)
-
-HomeWinsModel = tf.Variable(
-  [[ 0.10498991],
-    [-0.94905062],
-    [ 0.74825934],
-    [ 0.84990819]], dtype = tf.float64)
-DrawsModel = tf.Variable(
-  [[ 0.33612894],
-    [-0.14059028],
-    [-0.06648189],
-    [ 0.61908273]], dtype = tf.float64)
-HomeLossModel = tf.Variable(
-  [[-1.77296921],
-    [-0.17580398],
-    [ 0.09614677],
-    [ 0.26889068]], dtype = tf.float64)
-
-# test_games_matrix = tf.get_variable("test_games_matrix", shape=[2292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
-# test_results_matrix = tf.get_variable("test_results_matrix", shape=[2292,3], dtype = tf.float64, initializer = tf.zeros_initializer)
-# training_games_matrix = tf.get_variable("training_games_matrix", shape=[8000,3], dtype = tf.float64, initializer = tf.zeros_initializer)
-# training_results_matrix = tf.get_variable("training_results_matrix", shape=[8000,3], dtype = tf.float64, initializer = tf.zeros_initializer)
-
-# saver = tf.train.Saver({ 
-#   "training_games_matrix": training_games_matrix, 
-#   "training_results_matrix": training_results_matrix, 
-#   "test_games_matrix" : test_games_matrix,
-#   "test_results_matrix" : test_results_matrix 
-# })
+  def __init__(self, homeWins, draws, homeLoss):
+    # we will concatenate the individual models into a single matrix to make our calculation code a bit neater
+    self.LogisticRegressionModel = tf.transpose(tf.concat([homeWins, draws, homeLoss], 1))
   
-with tf.Session() as sess:
-  # saver.restore(sess, "../models/dataMatrices.ckpt")
-  # print("Model restored.")
-  # # Check the values of the variables
-  # print("test_games_matrix : %s" % test_games_matrix.eval())
-  # print("test_results_matrix : %s" % test_results_matrix.eval())
-  # print("training_games_matrix : %s" % training_games_matrix.eval())
-  # print("training_results_matrix : %s" % training_results_matrix.eval())
+  @staticmethod
+  def sigmoidSingle(theta, x):
+    xWithOnes = tf.concat([tf.ones([1,1], tf.float64), x], 0)
+    exponent = tf.matmul(theta, xWithOnes)
+    return 1 / (1 + tf.math.exp(-exponent))
   
+  @staticmethod
+  def sigmoid(theta, x):
+    m = x.get_shape()[0]
+    xWithOnes = tf.concat([tf.ones([m,1], tf.float64), x], 1)
+    exponent = tf.matmul(xWithOnes, tf.transpose(theta))
+    return 1 / (1 + tf.exp(-exponent))
+  
+  def predictSingleLogisticRegression(self, game):
+    # assuming game is entered as a 3x1 tensor
+    return predictor.sigmoidSingle(self.LogisticRegressionModel, game)
+  
+  @staticmethod
+  def switchRow(num):
+    if num == 0:
+      return [ 1., 0., 0. ]
+    elif num == 1: 
+      return [ 0., 1., 0. ]
+    elif num == 2:
+      return [ 0., 0., 1. ]
+
+  def predictMultipleLogisticRegression(self, game):
+    # game will be entered as a m x 3 matrix
+    results = predictor.sigmoid(self.LogisticRegressionModel, game)
+    # return tf.transpose([tf.argmax(results, axis = 1)])
+    max_index_list =  tf.argmax(results, axis = 1)
+    array = np.array(max_index_list.eval())
+    mapping = lambda x: [ 1., 0., 0. ] if x == 0 else ([ 0., 1., 0. ] if x == 1 else [ 0., 0., 1. ])
+    return tf.constant(np.array([mapping(x) for x in array]))
